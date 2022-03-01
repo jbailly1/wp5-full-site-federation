@@ -1,11 +1,14 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const DashboardPlugin = require("@module-federation/dashboard-plugin");
+const path = require('path');
 
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
-    publicPath: "http://localhost:8082/",
+    path: path.resolve(__dirname, '..', 'dist'),
+    // publicPath: "http://localhost:8082/",
+    filename: 'checkout.js'
   },
 
   resolve: {
@@ -46,11 +49,11 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "checkout",
-      filename: "remoteEntry.js",
+      filename: "checkoutEntry.js",
       remotes: {
-        checkout: "checkout@http://localhost:8082/remoteEntry.js",
-        search: "search@http://localhost:8081/remoteEntry.js",
-        home: "home@http://localhost:8080/remoteEntry.js",
+        checkout: "checkout@http://localhost:8080/checkoutEntry.js",
+        search: "search@http://localhost:8080/searchEntry.js",
+        home: "home@http://localhost:8080/homeEntry.js",
       },
       exposes: {
         "./Checkout": "./src/CheckoutContent",
@@ -79,8 +82,8 @@ module.exports = {
         remote: "http://localhost:8081/remoteEntry.js",
       },
     }),
-    new HtmlWebPackPlugin({
-      template: "./src/index.html",
-    }),
+    // new HtmlWebPackPlugin({
+    //   template: "./src/index.html",
+    // }),
   ],
 };

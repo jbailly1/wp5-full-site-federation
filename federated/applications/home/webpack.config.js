@@ -1,11 +1,14 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const DashboardPlugin = require("@module-federation/dashboard-plugin");
+const path = require('path');
 
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
-    publicPath: "http://localhost:8080/",
+    //publicPath: "http://localhost:8080/",
+    path: path.resolve(__dirname, '..', 'dist'),
+    filename: 'home.js'
   },
 
   resolve: {
@@ -13,6 +16,8 @@ module.exports = {
   },
 
   devServer: {
+    contentBase: path.join(__dirname, '..', 'dist'),
+  
     port: 8080,
     historyApiFallback: true,
   },
@@ -46,11 +51,11 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "home",
-      filename: "remoteEntry.js",
+      filename: "homeEntry.js",
       remotes: {
-        checkout: "checkout@http://localhost:8082/remoteEntry.js",
-        search: "search@http://localhost:8081/remoteEntry.js",
-        home: "home@http://localhost:8080/remoteEntry.js",
+        checkout: "checkout@http://localhost:8080/checkoutEntry.js",
+        search: "search@http://localhost:8080/searchEntry.js",
+        home: "home@http://localhost:8080/homeEntry.js",
       },
       exposes: {
         "./Home": "./src/HomeContent",
